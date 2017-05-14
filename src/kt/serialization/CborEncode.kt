@@ -23,7 +23,7 @@ fun <T : Any?> encodeInternal(input: T): MutableList<Byte> {
     }
 }
 
-fun encodeArray(input: Array<*>): MutableList<Byte> {
+private fun encodeArray(input: Array<*>): MutableList<Byte> {
     val result = ArrayList<Byte>()
     val additionalInformation = when {
         input.size < 24 -> input.size
@@ -41,13 +41,13 @@ fun encodeArray(input: Array<*>): MutableList<Byte> {
     return result
 }
 
-fun encodeNull(): MutableList<Byte> {
+private fun encodeNull(): MutableList<Byte> {
     val result = ArrayList<Byte>()
     result[0] = (MAJOR_OTHER.shl(5) + NULL).toByte()
     return result
 }
 
-inline fun <reified T : Any> encodeMap(input: T): MutableList<Byte> {
+private inline fun <reified T : Any> encodeMap(input: T): MutableList<Byte> {
     val memberProperties = input.javaClass.kotlin.memberProperties
     val result = ArrayList<Byte>()
     val size = memberProperties.size
@@ -70,13 +70,13 @@ inline fun <reified T : Any> encodeMap(input: T): MutableList<Byte> {
     return result
 }
 
-fun encodeBoolean(input: Boolean): MutableList<Byte> {
+private fun encodeBoolean(input: Boolean): MutableList<Byte> {
     val result = ArrayList<Byte>()
     result.add((MAJOR_OTHER.shl(5) + if (input) TRUE else FALSE).toByte())
     return result
 }
 
-fun encodeDouble(input: Double): MutableList<Byte> {
+private fun encodeDouble(input: Double): MutableList<Byte> {
     val result = ArrayList<Byte>()
     result.add((MAJOR_OTHER.shl(5) + DOUBLE_PRECISION_FLOAT).toByte())
     val doubleToRawIntBits = java.lang.Double.doubleToRawLongBits(input)
@@ -84,7 +84,7 @@ fun encodeDouble(input: Double): MutableList<Byte> {
     return result
 }
 
-fun encodeFloat(input: Float): MutableList<Byte> {
+private fun encodeFloat(input: Float): MutableList<Byte> {
     val result = ArrayList<Byte>()
     result.add((MAJOR_OTHER.shl(5) + SINGLE_PRECISION_FLOAT).toByte())
     val floatToRawIntBits = java.lang.Float.floatToRawIntBits(input)
@@ -92,7 +92,7 @@ fun encodeFloat(input: Float): MutableList<Byte> {
     return result
 }
 
-fun encodeByteArray(input: ByteArray): MutableList<Byte> {
+private fun encodeByteArray(input: ByteArray): MutableList<Byte> {
     val result = ArrayList<Byte>()
     val size = input.size
     val additionalInformation = when {
@@ -111,7 +111,7 @@ fun encodeByteArray(input: ByteArray): MutableList<Byte> {
     return result
 }
 
-fun encodeString(input: String): MutableList<Byte> {
+private fun encodeString(input: String): MutableList<Byte> {
     val result = ArrayList<Byte>()
     val size = input.length
     val additionalInformation = when {
@@ -130,7 +130,7 @@ fun encodeString(input: String): MutableList<Byte> {
     return result
 }
 
-fun encodeNumber(input: Long): MutableList<Byte> {
+private fun encodeNumber(input: Long): MutableList<Byte> {
     val unsigned = input >= 0
     val convertedInput = if (unsigned) input else input.inv()
     val additionalInformation = when {
@@ -152,7 +152,7 @@ fun encodeNumber(input: Long): MutableList<Byte> {
 }
 
 
-fun longToBytes(value: Long): MutableList<Byte> {
+private fun longToBytes(value: Long): MutableList<Byte> {
     val result = ArrayList<Byte>()
     result.add((value ushr 56).toByte())
     result.add((value ushr 48).toByte())
@@ -165,7 +165,7 @@ fun longToBytes(value: Long): MutableList<Byte> {
     return result
 }
 
-fun intToBytes(value: Int): MutableList<Byte> {
+private fun intToBytes(value: Int): MutableList<Byte> {
     val result = ArrayList<Byte>()
     result.add((value ushr 24).toByte())
     result.add((value ushr 16).toByte())
@@ -174,13 +174,13 @@ fun intToBytes(value: Int): MutableList<Byte> {
     return result
 }
 
-fun intToBytes(value: Long): MutableList<Byte> = intToBytes(value.toInt())
+private fun intToBytes(value: Long): MutableList<Byte> = intToBytes(value.toInt())
 
-fun shortToBytes(value: Int): MutableList<Byte> {
+private fun shortToBytes(value: Int): MutableList<Byte> {
     val result = ArrayList<Byte>()
     result.add((value ushr 8).toByte())
     result.add(value.toByte())
     return result
 }
 
-fun shortToBytes(value: Long): MutableList<Byte> = shortToBytes(value.toInt())
+private fun shortToBytes(value: Long): MutableList<Byte> = shortToBytes(value.toInt())
